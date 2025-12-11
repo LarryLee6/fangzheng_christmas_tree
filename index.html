@@ -253,11 +253,17 @@
         });
 
         function loadPredefinedPhotos() {
-            CONFIG.preloadPhotos.forEach(url => {
+            if (!CONFIG.preloadPhotos || CONFIG.preloadPhotos.length === 0) return;
+
+            CONFIG.preloadPhotos.forEach(path => {
                 const img = new Image();
-                img.crossOrigin = "Anonymous";
-                img.src = url;
-                img.onload = () => addPhotoMesh(img);
+                img.src = path;
+                img.onload = () => {
+                    addPhotoMesh(img);
+                };
+                img.onerror = () => {
+                    console.error("无法加载图片: " + path + " (请确保使用 Live Server 打开)");
+                };
             });
         }
 
